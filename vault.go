@@ -118,7 +118,7 @@ func (c *vaultConfig) Load(ctx context.Context) error {
 		return err
 	}
 
-	return json.Unmarshal(data, c.opts.Struct)
+	return c.opts.Codec.Unmarshal(data, c.opts.Struct)
 }
 
 func (c *vaultConfig) Save(ctx context.Context) error {
