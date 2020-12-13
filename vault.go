@@ -6,13 +6,11 @@ import (
 	"errors"
 
 	"github.com/hashicorp/vault/api"
-	jsoncodec "github.com/unistack-org/micro-codec-json"
 	"github.com/unistack-org/micro/v3/config"
 )
 
 var (
 	DefaultStructTag = "vault"
-	ErrInvalidStruct = errors.New("invalid struct specified")
 	ErrPathNotExist  = errors.New("path is not exist")
 )
 
@@ -29,6 +27,10 @@ func (c *vaultConfig) Options() config.Options {
 func (c *vaultConfig) Init(opts ...config.Option) error {
 	for _, o := range opts {
 		o(&c.opts)
+	}
+
+	if c.opts.Codec == nil {
+		return config.ErrCodecMissing
 	}
 
 	cfg := api.DefaultConfig()
@@ -127,7 +129,7 @@ func (c *vaultConfig) Save(ctx context.Context) error {
 }
 
 func (c *vaultConfig) String() string {
-	return "consul"
+	return "vault"
 }
 
 func NewConfig(opts ...config.Option) config.Config {
@@ -135,6 +137,5 @@ func NewConfig(opts ...config.Option) config.Config {
 	if len(options.StructTag) == 0 {
 		options.StructTag = DefaultStructTag
 	}
-	options.Codec = jsoncodec.NewCodec()
 	return &vaultConfig{opts: options}
 }
