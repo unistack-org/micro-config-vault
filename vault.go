@@ -90,6 +90,12 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 }
 
 func (c *vaultConfig) Load(ctx context.Context) error {
+	for _, fn := range c.opts.BeforeLoad {
+		if err := fn(ctx, c); err != nil {
+			return err
+		}
+	}
+
 	//_, version, err := getKVinfo(c.cli, c.path)
 	//if err != nil {
 	//	return err
@@ -121,10 +127,32 @@ func (c *vaultConfig) Load(ctx context.Context) error {
 		return err
 	}
 
-	return c.opts.Codec.Unmarshal(data, c.opts.Struct)
+	if err = c.opts.Codec.Unmarshal(data, c.opts.Struct); err != nil {
+		return err
+	}
+
+	for _, fn := range c.opts.AfterLoad {
+		if err := fn(ctx, c); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (c *vaultConfig) Save(ctx context.Context) error {
+	for _, fn := range c.opts.BeforeSave {
+		if err := fn(ctx, c); err != nil {
+			return err
+		}
+	}
+
+	for _, fn := range c.opts.AfterSave {
+		if err := fn(ctx, c); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
