@@ -91,48 +91,31 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 
 func (c *vaultConfig) Load(ctx context.Context) error {
 	for _, fn := range c.opts.BeforeLoad {
-		if err := fn(ctx, c); err != nil {
+		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
 	}
 
-	//_, version, err := getKVinfo(c.cli, c.path)
-	//if err != nil {
-	//	return err
-	//}
 	pair, err := c.cli.Logical().Read(c.path)
-	if err != nil {
+	if err != nil && !c.opts.AllowFail {
 		return err
-	} else if pair == nil {
-		return ErrPathNotExist
-	} else if pair.Data == nil {
+	} else if (pair == nil || pair.Data == nil) && !c.opts.AllowFail {
 		return ErrPathNotExist
 	}
-	//fmt.Printf("%#+v\n", pair)
-	//reload secrets from vault's data
-	//data := pair.Data
-	var data []byte
-	data, err = json.Marshal(pair.Data["data"])
 
-	/*
-		switch version {
-		case 1:
-			dataBytes, err = json.Marshal(data)
-		case 2:
-			dataBytes, err = json.Marshal(data["data"])
+	if err == nil && pair != nil && pair.Data != nil {
+		var data []byte
+		data, err = json.Marshal(pair.Data["data"])
+		if err == nil {
+			err = c.opts.Codec.Unmarshal(data, c.opts.Struct)
 		}
-	*/
-
-	if err != nil {
-		return err
-	}
-
-	if err = c.opts.Codec.Unmarshal(data, c.opts.Struct); err != nil {
-		return err
+		if err != nil && !c.opts.AllowFail {
+			return err
+		}
 	}
 
 	for _, fn := range c.opts.AfterLoad {
-		if err := fn(ctx, c); err != nil {
+		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
 	}
@@ -142,13 +125,13 @@ func (c *vaultConfig) Load(ctx context.Context) error {
 
 func (c *vaultConfig) Save(ctx context.Context) error {
 	for _, fn := range c.opts.BeforeSave {
-		if err := fn(ctx, c); err != nil {
+		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
 	}
 
 	for _, fn := range c.opts.AfterSave {
-		if err := fn(ctx, c); err != nil {
+		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
 	}
