@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	jsoncodec "github.com/unistack-org/micro-codec-json"
 	vault "github.com/unistack-org/micro-config-vault"
 	"github.com/unistack-org/micro/v3/config"
 )
@@ -20,7 +21,8 @@ func TestLoad(t *testing.T) {
 
 	conf := &Config{}
 
-	cfg := vault.NewConfig(config.Struct(conf), vault.Path("/secret/data/customer/acme"), vault.Token("s.3QKHWXe4VV7S0wqIZuKxuEv0"))
+	cfg := vault.NewConfig(config.Codec(jsoncodec.NewCodec()),
+		config.Struct(conf), vault.Path("/secret/data/customer/acme"), vault.Token("s.3QKHWXe4VV7S0wqIZuKxuEv0"))
 	if err := cfg.Init(); err != nil {
 		t.Fatal(err)
 	}

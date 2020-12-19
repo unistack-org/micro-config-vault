@@ -6,6 +6,7 @@ import (
 	"errors"
 
 	"github.com/hashicorp/vault/api"
+	"github.com/imdario/mergo"
 	"github.com/unistack-org/micro/v3/config"
 )
 
@@ -107,7 +108,13 @@ func (c *vaultConfig) Load(ctx context.Context) error {
 		var data []byte
 		data, err = json.Marshal(pair.Data["data"])
 		if err == nil {
-			err = c.opts.Codec.Unmarshal(data, c.opts.Struct)
+			src, err := config.Zero(c.opts.Struct)
+			if err == nil {
+				err = c.opts.Codec.Unmarshal(data, src)
+				if err == nil {
+					err = mergo.Merge(c.opts.Struct, src, mergo.WithOverride, mergo.WithTypeCheck, mergo.WithAppendSlice)
+				}
+			}
 		}
 		if err != nil && !c.opts.AllowFail {
 			return err
