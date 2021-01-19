@@ -7,5 +7,5 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/vault/api v1.0.4
 	github.com/imdario/mergo v0.3.11
-	github.com/unistack-org/micro/v3 v3.1.1
+	github.com/unistack-org/micro/v3 v3.1.2
 )

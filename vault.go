@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/vault/api"
 	"github.com/imdario/mergo"
 	"github.com/unistack-org/micro/v3/config"
+	rutil "github.com/unistack-org/micro/v3/util/reflect"
 )
 
 var (
@@ -108,7 +109,7 @@ func (c *vaultConfig) Load(ctx context.Context) error {
 		var data []byte
 		data, err = json.Marshal(pair.Data["data"])
 		if err == nil {
-			src, err := config.Zero(c.opts.Struct)
+			src, err := rutil.Zero(c.opts.Struct)
 			if err == nil {
 				err = c.opts.Codec.Unmarshal(data, src)
 				if err == nil {
