@@ -151,6 +151,10 @@ func (c *vaultConfig) String() string {
 	return "vault"
 }
 
+func (c *vaultConfig) Name() string {
+	return c.opts.Name
+}
+
 func NewConfig(opts ...config.Option) config.Config {
 	options := config.NewOptions(opts...)
 	if len(options.StructTag) == 0 {
