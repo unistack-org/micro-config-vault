@@ -80,8 +80,9 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 		})
 		if err != nil && !c.opts.AllowFail {
 			return err
+		} else if err == nil {
+			token = rsp.Auth.ClientToken
 		}
-		token = rsp.Auth.ClientToken
 	}
 	cli.SetToken(token)
 
