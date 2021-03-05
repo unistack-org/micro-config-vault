@@ -70,6 +70,8 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 
 	cli, err := api.NewClient(cfg)
 	if err != nil && !c.opts.AllowFail {
+		return nil
+	} else if err != nil {
 		return err
 	}
 
@@ -97,6 +99,12 @@ func (c *vaultConfig) Load(ctx context.Context) error {
 		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
+	}
+
+	if c.cli == nil && !c.opts.AllowFail {
+		return ErrPathNotExist
+	} else if c.cli == nil && c.opts.AllowFail {
+		return nil
 	}
 
 	pair, err := c.cli.Logical().Read(c.path)
