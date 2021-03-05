@@ -69,7 +69,7 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	}
 
 	cli, err := api.NewClient(cfg)
-	if err != nil {
+	if err != nil && !c.opts.AllowFail {
 		return err
 	}
 
@@ -78,7 +78,7 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 			"role_id":   roleID,
 			"secret_id": secretID,
 		})
-		if err != nil {
+		if err != nil && !c.opts.AllowFail {
 			return err
 		}
 		token = rsp.Auth.ClientToken
