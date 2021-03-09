@@ -55,6 +55,8 @@ github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb/go.mod h1:+NfK9FKe
 github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d/go.mod h1:+NfK9FKeTrX5uv1uIXGdwYDTeHna2qgaIlx54MXqjAM=
 github.com/imdario/mergo v0.3.11 h1:3tnifQM4i+fbajXKBHXWEH+KvNHqojZ778UH75j3bGA=
 github.com/imdario/mergo v0.3.11/go.mod h1:jmQim1M+e3UYxmgPu/WyfjB3N3VflVyUjjjwH0dnCYA=
+github.com/imdario/mergo v0.3.12 h1:b6R2BslTbIEToALKP7LxUvijTsNI9TAe80pLWN2g/HU=
+github.com/imdario/mergo v0.3.12/go.mod h1:jmQim1M+e3UYxmgPu/WyfjB3N3VflVyUjjjwH0dnCYA=
 github.com/mattn/go-colorable v0.0.9/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU=
 github.com/mattn/go-isatty v0.0.3/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
@@ -87,6 +89,7 @@ github.com/unistack-org/micro/v3 v3.2.16 h1:eQwEJr7RiB0jvOSAil+c6t2C1zW7MpfFAVx2
 github.com/unistack-org/micro/v3 v3.2.16/go.mod h1:y+fV+BPNK2IqGoLquRU396jTYifG0HCw3zxFfI4E0dc=
 github.com/unistack-org/micro/v3 v3.2.17 h1:WNkkcKj1NMLViH9YgSDJRA2PJxIaDmY3GQBjHQV20DU=
 github.com/unistack-org/micro/v3 v3.2.17/go.mod h1:y+fV+BPNK2IqGoLquRU396jTYifG0HCw3zxFfI4E0dc=
+github.com/unistack-org/micro/v3 v3.2.20 h1:EY94FDfHR43QvKNjmCaVH8/7+D8bmLwySXbFK9iIQY0=
 github.com/unistack-org/micro/v3 v3.2.20/go.mod h1:y+fV+BPNK2IqGoLquRU396jTYifG0HCw3zxFfI4E0dc=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2 h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
