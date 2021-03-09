@@ -1,6 +1,8 @@
 package vault
 
 import (
+	"time"
+
 	"github.com/hashicorp/vault/api"
 	"github.com/unistack-org/micro/v3/config"
 )
@@ -39,4 +41,10 @@ type secretIDKey struct{}
 
 func SecretID(secret string) config.Option {
 	return config.SetOption(secretIDKey{}, secret)
+}
+
+type timeoutKey struct{}
+
+func Timeout(td time.Duration) config.Option {
+	return config.SetOption(timeoutKey{}, td)
 }

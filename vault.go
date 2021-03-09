@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"time"
 
 	"github.com/hashicorp/vault/api"
 	"github.com/imdario/mergo"
@@ -36,6 +37,7 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	}
 
 	cfg := api.DefaultConfig()
+	cfg.Timeout = 3 * time.Second
 	path := ""
 	token := ""
 	roleID := ""
@@ -44,6 +46,10 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	if c.opts.Context != nil {
 		if v, ok := c.opts.Context.Value(configKey{}).(*api.Config); ok {
 			cfg = v
+		}
+
+		if v, ok := c.opts.Context.Value(timeoutKey{}).(time.Duration); ok {
+			cfg.Timeout = v
 		}
 
 		if v, ok := c.opts.Context.Value(addrKey{}).(string); ok {
