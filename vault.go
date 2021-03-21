@@ -37,7 +37,8 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	}
 
 	cfg := api.DefaultConfig()
-	cfg.Timeout = 3 * time.Second
+	cfg.Timeout = 500 * time.Millisecond
+	cfg.MaxRetries = 2
 	path := ""
 	token := ""
 	roleID := ""
