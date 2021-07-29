@@ -3,7 +3,7 @@ package vault
 import (
 	"context"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/hashicorp/vault/api"
@@ -14,7 +14,6 @@ import (
 
 var (
 	DefaultStructTag = "vault"
-	ErrPathNotExist  = errors.New("path is not exist")
 )
 
 type vaultConfig struct {
@@ -109,7 +108,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	}
 
 	if c.cli == nil && !c.opts.AllowFail {
-		return ErrPathNotExist
+		return fmt.Errorf("vault client not created")
 	} else if c.cli == nil && c.opts.AllowFail {
 		return nil
 	}
@@ -118,7 +117,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	if err != nil && !c.opts.AllowFail {
 		return err
 	} else if (pair == nil || pair.Data == nil) && !c.opts.AllowFail {
-		return ErrPathNotExist
+		return fmt.Errorf("vault path %s not found", c.path)
 	}
 
 	if err == nil && pair != nil && pair.Data != nil {
