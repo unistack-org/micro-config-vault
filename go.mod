@@ -13,7 +13,7 @@ require (
 	github.com/imdario/mergo v0.3.12
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
-	github.com/unistack-org/micro/v3 v3.7.0
+	github.com/unistack-org/micro/v3 v3.7.1
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
 	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
