@@ -260,8 +260,8 @@ github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
 github.com/unistack-org/micro-proto v0.0.9 h1:KrWLS4FUX7UAWNAilQf70uad6ZPf/0EudeddCXllRVc=
 github.com/unistack-org/micro-proto v0.0.9/go.mod h1:Cckwmzd89gvS7ThxzZp9kQR/EOdksFQcsTAtDDyKwrg=
-github.com/unistack-org/micro/v3 v3.7.3 h1:7dCv7WuTYp47jZ/doVCXDNMnY75imprbmwSnmchTSJY=
-github.com/unistack-org/micro/v3 v3.7.3/go.mod h1:78vy7ggElJD+ayx8ruhJsY+SkGUupfR32LXrg1UObvg=
+github.com/unistack-org/micro/v3 v3.7.4 h1:nRk7f58v0VsiW7aKL0UQaFCQxFoursHQLoWdeZ1RYbg=
+github.com/unistack-org/micro/v3 v3.7.4/go.mod h1:78vy7ggElJD+ayx8ruhJsY+SkGUupfR32LXrg1UObvg=
 github.com/urfave/cli v0.0.0-20171014202726-7bc6a0acffa5/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.uber.org/atomic v1.6.0/go.mod h1:sABNBOSYdrvTF6hTgEIbc7YasKWGhgEQZyfxyTvoXHQ=
