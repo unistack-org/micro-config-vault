@@ -12,13 +12,13 @@ import (
 )
 
 type vaultWatcher struct {
-	cli   *api.Client
 	path  string
-	opts  config.Options
-	wopts config.WatchOptions
 	done  chan struct{}
 	vchan chan map[string]interface{}
 	echan chan error
+	cli   *api.Client
+	opts  config.Options
+	wopts config.WatchOptions
 }
 
 func (w *vaultWatcher) run() {

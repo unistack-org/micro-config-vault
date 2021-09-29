@@ -12,14 +12,12 @@ import (
 	rutil "github.com/unistack-org/micro/v3/util/reflect"
 )
 
-var (
-	DefaultStructTag = "vault"
-)
+var DefaultStructTag = "vault"
 
 type vaultConfig struct {
-	opts config.Options
-	cli  *api.Client
 	path string
+	cli  *api.Client
+	opts config.Options
 }
 
 func (c *vaultConfig) Options() config.Options {
@@ -75,9 +73,11 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	}
 
 	cli, err := api.NewClient(cfg)
-	if err != nil && !c.opts.AllowFail {
-		return nil
-	} else if err != nil {
+	if err != nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault init path %s err: %v", path, err)
+		if c.opts.AllowFail {
+			return nil
+		}
 		return err
 	}
 
@@ -86,8 +86,11 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 			"role_id":   roleID,
 			"secret_id": secretID,
 		})
-		if err != nil && !c.opts.AllowFail {
-			return err
+		if err != nil {
+			c.opts.Logger.Errorf(c.opts.Context, "vault init approle err: %v", err)
+			if !c.opts.AllowFail {
+				return err
+			}
 		} else if err == nil {
 			token = rsp.Auth.ClientToken
 		}
@@ -101,71 +104,90 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 }
 
 func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error {
-	for _, fn := range c.opts.BeforeLoad {
-		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
+	if err := config.DefaultBeforeLoad(ctx, c); err != nil {
+		return err
 	}
 
-	if c.cli == nil && !c.opts.AllowFail {
-		return fmt.Errorf("vault client not created")
-	} else if c.cli == nil && c.opts.AllowFail {
-		return nil
+	if c.cli == nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault load err: %v", fmt.Errorf("vault client not created"))
+		if !c.opts.AllowFail {
+			return fmt.Errorf("vault client not created")
+		}
+		return config.DefaultAfterLoad(ctx, c)
 	}
 
 	pair, err := c.cli.Logical().Read(c.path)
-	if err != nil && !c.opts.AllowFail {
+	if err != nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		if !c.opts.AllowFail {
+			return err
+		}
+		return config.DefaultAfterLoad(ctx, c)
+	}
+
+	if pair == nil || pair.Data == nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, fmt.Errorf("not found"))
+		if !c.opts.AllowFail {
+			return fmt.Errorf("vault path %s not found", c.path)
+		}
+		return config.DefaultAfterLoad(ctx, c)
+	}
+
+	var data []byte
+	var src interface{}
+	data, err = json.Marshal(pair.Data["data"])
+	if err != nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		if !c.opts.AllowFail {
+			return err
+		}
+		return config.DefaultAfterLoad(ctx, c)
+	}
+
+	src, err = rutil.Zero(c.opts.Struct)
+	if err == nil {
+		err = c.opts.Codec.Unmarshal(data, src)
+	}
+
+	if err != nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		if !c.opts.AllowFail {
+			return err
+		}
+		return config.DefaultAfterLoad(ctx, c)
+	}
+
+	options := config.NewLoadOptions(opts...)
+	mopts := []func(*mergo.Config){mergo.WithTypeCheck}
+	if options.Override {
+		mopts = append(mopts, mergo.WithOverride)
+	}
+	if options.Append {
+		mopts = append(mopts, mergo.WithAppendSlice)
+	}
+	err = mergo.Merge(c.opts.Struct, src, mopts...)
+
+	if err != nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		if !c.opts.AllowFail {
+			return err
+		}
+	}
+
+	if err := config.DefaultAfterLoad(ctx, c); err != nil {
 		return err
-	} else if (pair == nil || pair.Data == nil) && !c.opts.AllowFail {
-		return fmt.Errorf("vault path %s not found", c.path)
-	}
-
-	if err == nil && pair != nil && pair.Data != nil {
-		var data []byte
-		var src interface{}
-		data, err = json.Marshal(pair.Data["data"])
-		if err == nil {
-			src, err = rutil.Zero(c.opts.Struct)
-			if err == nil {
-				err = c.opts.Codec.Unmarshal(data, src)
-				if err == nil {
-					options := config.NewLoadOptions(opts...)
-					mopts := []func(*mergo.Config){mergo.WithTypeCheck}
-					if options.Override {
-						mopts = append(mopts, mergo.WithOverride)
-					}
-					if options.Append {
-						mopts = append(mopts, mergo.WithAppendSlice)
-					}
-					err = mergo.Merge(c.opts.Struct, src, mopts...)
-				}
-			}
-		}
-		if err != nil && !c.opts.AllowFail {
-			return err
-		}
-	}
-
-	for _, fn := range c.opts.AfterLoad {
-		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
 	}
 
 	return nil
 }
 
 func (c *vaultConfig) Save(ctx context.Context, opts ...config.SaveOption) error {
-	for _, fn := range c.opts.BeforeSave {
-		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
+	if err := config.DefaultBeforeSave(ctx, c); err != nil {
+		return err
 	}
 
-	for _, fn := range c.opts.AfterSave {
-		if err := fn(ctx, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
+	if err := config.DefaultAfterSave(ctx, c); err != nil {
+		return err
 	}
 
 	return nil
