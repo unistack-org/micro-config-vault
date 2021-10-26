@@ -1,4 +1,4 @@
-module github.com/unistack-org/micro-config-vault/v3
+module go.unistack.orgmicro-config-vault/v3
 
 go 1.16
 
@@ -14,7 +14,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
-	github.com/unistack-org/micro/v3 v3.7.6
+	go.unistack.org/micro/v3 v3.8.5
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect

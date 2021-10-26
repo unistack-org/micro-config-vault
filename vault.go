@@ -1,4 +1,4 @@
-package vault
+package vault // import "go.unistack.org/micro-config-vault/v3"
 
 import (
 	"context"
@@ -8,8 +8,8 @@ import (
 
 	"github.com/hashicorp/vault/api"
 	"github.com/imdario/mergo"
-	"github.com/unistack-org/micro/v3/config"
-	rutil "github.com/unistack-org/micro/v3/util/reflect"
+	"go.unistack.org/micro/v3/config"
+	rutil "go.unistack.org/micro/v3/util/reflect"
 )
 
 var DefaultStructTag = "vault"

@@ -6,9 +6,9 @@ import (
 	"reflect"
 
 	"github.com/hashicorp/vault/api"
-	"github.com/unistack-org/micro/v3/config"
-	"github.com/unistack-org/micro/v3/util/jitter"
-	rutil "github.com/unistack-org/micro/v3/util/reflect"
+	"go.unistack.org/micro/v3/config"
+	"go.unistack.org/micro/v3/util/jitter"
+	rutil "go.unistack.org/micro/v3/util/reflect"
 )
 
 type vaultWatcher struct {
