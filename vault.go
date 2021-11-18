@@ -108,6 +108,14 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 		return err
 	}
 
+	path := c.path
+	options := config.NewLoadOptions(opts...)
+	if options.Context != nil {
+		if v, ok := options.Context.Value(pathKey{}).(string); ok && v != "" {
+			path = v
+		}
+	}
+
 	if c.cli == nil {
 		c.opts.Logger.Errorf(c.opts.Context, "vault load err: %v", fmt.Errorf("vault client not created"))
 		if !c.opts.AllowFail {
@@ -116,9 +124,9 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 		return config.DefaultAfterLoad(ctx, c)
 	}
 
-	pair, err := c.cli.Logical().Read(c.path)
+	pair, err := c.cli.Logical().Read(path)
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", path, err)
 		if !c.opts.AllowFail {
 			return err
 		}
@@ -126,9 +134,9 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	}
 
 	if pair == nil || pair.Data == nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, fmt.Errorf("not found"))
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", path, fmt.Errorf("not found"))
 		if !c.opts.AllowFail {
-			return fmt.Errorf("vault path %s not found", c.path)
+			return fmt.Errorf("vault path %s not found", path)
 		}
 		return config.DefaultAfterLoad(ctx, c)
 	}
@@ -137,7 +145,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	var src interface{}
 	data, err = json.Marshal(pair.Data["data"])
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", path, err)
 		if !c.opts.AllowFail {
 			return err
 		}
@@ -150,14 +158,13 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	}
 
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", path, err)
 		if !c.opts.AllowFail {
 			return err
 		}
 		return config.DefaultAfterLoad(ctx, c)
 	}
 
-	options := config.NewLoadOptions(opts...)
 	mopts := []func(*mergo.Config){mergo.WithTypeCheck}
 	if options.Override {
 		mopts = append(mopts, mergo.WithOverride)
@@ -168,7 +175,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	err = mergo.Merge(c.opts.Struct, src, mopts...)
 
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", path, err)
 		if !c.opts.AllowFail {
 			return err
 		}
@@ -184,6 +191,39 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 func (c *vaultConfig) Save(ctx context.Context, opts ...config.SaveOption) error {
 	if err := config.DefaultBeforeSave(ctx, c); err != nil {
 		return err
+	}
+
+	path := c.path
+	options := config.NewSaveOptions(opts...)
+	if options.Context != nil {
+		if v, ok := options.Context.Value(pathKey{}).(string); ok && v != "" {
+			path = v
+		}
+	}
+
+	if c.cli == nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault save err: %v", fmt.Errorf("vault client not created"))
+		if !c.opts.AllowFail {
+			return fmt.Errorf("vault client not created")
+		}
+		return config.DefaultAfterSave(ctx, c)
+	}
+
+	buf, err := c.opts.Codec.Marshal(c.opts.Struct)
+	if err != nil {
+		if !c.opts.AllowFail {
+			return err
+		}
+		return config.DefaultAfterSave(ctx, c)
+	}
+
+	_, err = c.cli.Logical().WriteBytes(path, buf)
+	if err != nil {
+		c.opts.Logger.Errorf(c.opts.Context, "vault save path %s err: %v", path, err)
+		if !c.opts.AllowFail {
+			return err
+		}
+		return config.DefaultAfterSave(ctx, c)
 	}
 
 	if err := config.DefaultAfterSave(ctx, c); err != nil {
@@ -202,9 +242,17 @@ func (c *vaultConfig) Name() string {
 }
 
 func (c *vaultConfig) Watch(ctx context.Context, opts ...config.WatchOption) (config.Watcher, error) {
+	path := c.path
+	options := config.NewWatchOptions(opts...)
+	if options.Context != nil {
+		if v, ok := options.Context.Value(pathKey{}).(string); ok && v != "" {
+			path = v
+		}
+	}
+
 	w := &vaultWatcher{
 		cli:   c.cli,
-		path:  c.path,
+		path:  path,
 		opts:  c.opts,
 		wopts: config.NewWatchOptions(opts...),
 		done:  make(chan struct{}),
