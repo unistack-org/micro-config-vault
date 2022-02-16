@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/hashicorp/vault/api"
@@ -44,6 +45,10 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	if c.opts.Context != nil {
 		if v, ok := c.opts.Context.Value(configKey{}).(*api.Config); ok {
 			cfg = v
+		}
+
+		if v, ok := c.opts.Context.Value(httpClientKey{}).(*http.Client); ok {
+			cfg.HttpClient = v
 		}
 
 		if v, ok := c.opts.Context.Value(timeoutKey{}).(time.Duration); ok {
