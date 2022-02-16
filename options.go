@@ -1,11 +1,18 @@
 package vault
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/hashicorp/vault/api"
 	"go.unistack.org/micro/v3/config"
 )
+
+type httpClientKey struct{}
+
+func HTTPClient(c *http.Client) config.Option {
+	return config.SetOption(httpClientKey{}, c)
+}
 
 type configKey struct{}
 
