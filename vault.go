@@ -30,6 +30,10 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 		o(&c.opts)
 	}
 
+	if err := config.DefaultBeforeInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+		return err
+	}
+
 	if c.opts.Codec == nil {
 		return config.ErrCodecMissing
 	}
@@ -79,24 +83,37 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 
 	cli, err := api.NewClient(cfg)
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault init path %s err: %v", path, err)
-		if c.opts.AllowFail {
-			return nil
+		if !c.opts.AllowFail {
+			return err
 		}
-		return err
+
+		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+			return err
+		}
+
+		return nil
 	}
 	c.cli = cli
 	c.path = path
 
 	if token != "" {
 		cli.SetToken(token)
-		return nil
-	}
 
-	if roleID == "" || secretID == "" {
+		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+			return err
+		}
+
+		return nil
+
+	} else if roleID == "" || secretID == "" {
 		if !c.opts.AllowFail {
 			return fmt.Errorf("missing Token or RoleID and SecretID")
 		}
+
+		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+			return err
+		}
+
 		return nil
 	}
 
@@ -106,12 +123,15 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	})
 
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault init approle err: %v", err)
 		if !c.opts.AllowFail {
 			return err
 		}
 	} else if err == nil {
 		cli.SetToken(rsp.Auth.ClientToken)
+	}
+
+	if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+		return err
 	}
 
 	return nil
@@ -122,6 +142,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 		return err
 	}
 
+	options := config.NewLoadOptions(opts...)
 	if c.cli == nil {
 		c.opts.Logger.Errorf(c.opts.Context, "vault load err: %v", fmt.Errorf("vault client not created"))
 		if !c.opts.AllowFail {
@@ -132,7 +153,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 
 	pair, err := c.cli.Logical().Read(c.path)
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		err = fmt.Errorf("vault load path %s err: %w", c.path, err)
 		if !c.opts.AllowFail {
 			return err
 		}
@@ -140,9 +161,9 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	}
 
 	if pair == nil || pair.Data == nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, fmt.Errorf("not found"))
+		err = fmt.Errorf("vault load path %s err: %w", c.path, fmt.Errorf("not found"))
 		if !c.opts.AllowFail {
-			return fmt.Errorf("vault path %s not found", c.path)
+			return err
 		}
 		return config.DefaultAfterLoad(ctx, c)
 	}
@@ -151,14 +172,19 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	var src interface{}
 	data, err = json.Marshal(pair.Data["data"])
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		err = fmt.Errorf("vault load path %s err: %w", c.path, err)
 		if !c.opts.AllowFail {
 			return err
 		}
 		return config.DefaultAfterLoad(ctx, c)
 	}
 
-	src, err = rutil.Zero(c.opts.Struct)
+	dst := c.opts.Struct
+	if options.Struct != nil {
+		dst = options.Struct
+	}
+
+	src, err = rutil.Zero(dst)
 	if err == nil {
 		err = c.opts.Codec.Unmarshal(data, src)
 	}
@@ -171,7 +197,6 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 		return config.DefaultAfterLoad(ctx, c)
 	}
 
-	options := config.NewLoadOptions(opts...)
 	mopts := []func(*mergo.Config){mergo.WithTypeCheck}
 	if options.Override {
 		mopts = append(mopts, mergo.WithOverride)
@@ -179,10 +204,10 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	if options.Append {
 		mopts = append(mopts, mergo.WithAppendSlice)
 	}
-	err = mergo.Merge(c.opts.Struct, src, mopts...)
+	err = mergo.Merge(dst, src, mopts...)
 
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		err = fmt.Errorf("vault load path %s err: %w", c.path, err)
 		if !c.opts.AllowFail {
 			return err
 		}
