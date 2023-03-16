@@ -87,7 +87,7 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 			return err
 		}
 
-		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
+		if err = config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 			return err
 		}
 

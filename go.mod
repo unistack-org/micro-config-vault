@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/hashicorp/vault/api v1.9.0
 	github.com/imdario/mergo v0.3.13
-	go.unistack.org/micro/v3 v3.10.16
+	go.unistack.org/micro/v3 v3.10.18
 )
 
 require github.com/stretchr/testify v1.7.2 // indirect
