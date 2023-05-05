@@ -1,11 +1,11 @@
-module go.unistack.org/micro-config-vault/v3
+module go.unistack.org/micro-config-vault/v4
 
-go 1.18
+go 1.20
 
 require (
 	github.com/hashicorp/vault/api v1.9.0
-	github.com/imdario/mergo v0.3.13
-	go.unistack.org/micro/v3 v3.10.18
+	github.com/imdario/mergo v0.3.14
+	go.unistack.org/micro/v4 v4.0.1
 )
 
 require github.com/stretchr/testify v1.7.2 // indirect

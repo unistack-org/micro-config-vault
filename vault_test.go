@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"go.unistack.org/micro/v3/codec"
-	"go.unistack.org/micro/v3/config"
+	"go.unistack.org/micro/v4/codec"
+	"go.unistack.org/micro/v4/config"
 )
 
 func TestInit(t *testing.T) {
