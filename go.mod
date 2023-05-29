@@ -9,7 +9,7 @@ require (
 	github.com/hashicorp/vault/api v1.8.3
 	github.com/imdario/mergo v0.3.14
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
-	go.unistack.org/micro/v3 v3.10.20
+	go.unistack.org/micro/v3 v3.10.21
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 	google.golang.org/genproto v0.0.0-20220107163113-42d7afdf6368 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
