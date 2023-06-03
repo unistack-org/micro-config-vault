@@ -16,9 +16,12 @@ import (
 var DefaultStructTag = "vault"
 
 type vaultConfig struct {
-	path string
-	cli  *api.Client
-	opts config.Options
+	path     string
+	token    string
+	roleID   string
+	secretID string
+	cli      *api.Client
+	opts     config.Options
 }
 
 func (c *vaultConfig) Options() config.Options {
@@ -95,43 +98,38 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	}
 	c.cli = cli
 	c.path = path
+	c.token = token
+	c.roleID = roleID
+	c.secretID = secretID
 
-	if token != "" {
-		cli.SetToken(token)
-
-		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
-
-		return nil
-
-	} else if roleID == "" || secretID == "" {
-		if !c.opts.AllowFail {
-			return fmt.Errorf("missing Token or RoleID and SecretID")
-		}
-
-		if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
-			return err
-		}
-
-		return nil
-	}
-
-	rsp, err := cli.Logical().Write("auth/approle/login", map[string]interface{}{
-		"role_id":   roleID,
-		"secret_id": secretID,
-	})
-
-	if err != nil {
-		if !c.opts.AllowFail {
-			return err
-		}
-	} else if err == nil {
-		cli.SetToken(rsp.Auth.ClientToken)
+	if err = c.setToken(); err != nil && !c.opts.AllowFail {
+		return err
 	}
 
 	if err := config.DefaultAfterInit(c.opts.Context, c); err != nil && !c.opts.AllowFail {
 		return err
+	}
+
+	return nil
+}
+
+func (c *vaultConfig) setToken() error {
+	if c.token != "" {
+		c.cli.SetToken(c.token)
+	}
+
+	if c.roleID != "" && c.secretID != "" {
+		rsp, err := c.cli.Logical().Write("auth/approle/login", map[string]interface{}{
+			"role_id":   c.roleID,
+			"secret_id": c.secretID,
+		})
+		if err != nil {
+			if !c.opts.AllowFail {
+				return err
+			}
+		} else if err == nil {
+			c.cli.SetToken(rsp.Auth.ClientToken)
+		}
 	}
 
 	return nil
