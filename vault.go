@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/vault/api"
 	"github.com/imdario/mergo"
 	"go.unistack.org/micro/v4/config"
+	"go.unistack.org/micro/v4/options"
 	rutil "go.unistack.org/micro/v4/util/reflect"
 )
 
@@ -25,7 +26,7 @@ func (c *vaultConfig) Options() config.Options {
 	return c.opts
 }
 
-func (c *vaultConfig) Init(opts ...config.Option) error {
+func (c *vaultConfig) Init(opts ...options.Option) error {
 	for _, o := range opts {
 		o(&c.opts)
 	}
@@ -137,7 +138,7 @@ func (c *vaultConfig) Init(opts ...config.Option) error {
 	return nil
 }
 
-func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error {
+func (c *vaultConfig) Load(ctx context.Context, opts ...options.Option) error {
 	if err := config.DefaultBeforeLoad(ctx, c); err != nil {
 		return err
 	}
@@ -220,7 +221,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 	return nil
 }
 
-func (c *vaultConfig) Save(ctx context.Context, opts ...config.SaveOption) error {
+func (c *vaultConfig) Save(ctx context.Context, opts ...options.Option) error {
 	if err := config.DefaultBeforeSave(ctx, c); err != nil {
 		return err
 	}
@@ -240,7 +241,7 @@ func (c *vaultConfig) Name() string {
 	return c.opts.Name
 }
 
-func (c *vaultConfig) Watch(ctx context.Context, opts ...config.WatchOption) (config.Watcher, error) {
+func (c *vaultConfig) Watch(ctx context.Context, opts ...options.Option) (config.Watcher, error) {
 	w := &vaultWatcher{
 		cli:   c.cli,
 		path:  c.path,
@@ -256,7 +257,7 @@ func (c *vaultConfig) Watch(ctx context.Context, opts ...config.WatchOption) (co
 	return w, nil
 }
 
-func NewConfig(opts ...config.Option) config.Config {
+func NewConfig(opts ...options.Option) config.Config {
 	options := config.NewOptions(opts...)
 	if len(options.StructTag) == 0 {
 		options.StructTag = DefaultStructTag
