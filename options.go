@@ -5,65 +5,53 @@ import (
 	"time"
 
 	"github.com/hashicorp/vault/api"
-	"go.unistack.org/micro/v4/config"
+	"go.unistack.org/micro/v4/options"
 )
 
 type httpClientKey struct{}
 
-func HTTPClient(c *http.Client) config.Option {
-	return config.SetOption(httpClientKey{}, c)
+func HTTPClient(c *http.Client) options.Option {
+	return options.ContextOption(httpClientKey{}, c)
 }
 
 type configKey struct{}
 
-func Config(cfg *api.Config) config.Option {
-	return config.SetOption(configKey{}, cfg)
+func Config(cfg *api.Config) options.Option {
+	return options.ContextOption(configKey{}, cfg)
 }
 
 type tokenKey struct{}
 
-func Token(token string) config.Option {
-	return config.SetOption(tokenKey{}, token)
+func Token(token string) options.Option {
+	return options.ContextOption(tokenKey{}, token)
 }
 
 type addrKey struct{}
 
-func Address(addr string) config.Option {
-	return config.SetOption(addrKey{}, addr)
+func Address(addr string) options.Option {
+	return options.ContextOption(addrKey{}, addr)
 }
 
 type pathKey struct{}
 
-func Path(path string) config.Option {
-	return config.SetOption(pathKey{}, path)
-}
-
-func LoadPath(path string) config.LoadOption {
-	return config.SetLoadOption(pathKey{}, path)
-}
-
-func SavePath(path string) config.SaveOption {
-	return config.SetSaveOption(pathKey{}, path)
-}
-
-func WatchPath(path string) config.WatchOption {
-	return config.SetWatchOption(pathKey{}, path)
+func Path(path string) options.Option {
+	return options.ContextOption(pathKey{}, path)
 }
 
 type roleIDKey struct{}
 
-func RoleID(role string) config.Option {
-	return config.SetOption(roleIDKey{}, role)
+func RoleID(role string) options.Option {
+	return options.ContextOption(roleIDKey{}, role)
 }
 
 type secretIDKey struct{}
 
-func SecretID(secret string) config.Option {
-	return config.SetOption(secretIDKey{}, secret)
+func SecretID(secret string) options.Option {
+	return options.ContextOption(secretIDKey{}, secret)
 }
 
 type timeoutKey struct{}
 
-func Timeout(td time.Duration) config.Option {
-	return config.SetOption(timeoutKey{}, td)
+func Timeout(td time.Duration) options.Option {
+	return options.ContextOption(timeoutKey{}, td)
 }
