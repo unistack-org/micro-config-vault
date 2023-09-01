@@ -8,6 +8,6 @@ require (
 	github.com/hashicorp/vault/api v1.8.3
 	github.com/imdario/mergo v0.3.15
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
-	go.unistack.org/micro/v3 v3.10.25
+	go.unistack.org/micro/v3 v3.10.26
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 )
