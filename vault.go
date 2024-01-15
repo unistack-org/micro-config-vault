@@ -145,7 +145,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...options.Option) error {
 
 	options := config.NewLoadOptions(opts...)
 	if c.cli == nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load err: %v", fmt.Errorf("vault client not created"))
+		c.opts.Logger.Error(c.opts.Context, fmt.Sprintf("vault load err: %v", "vault client not created"))
 		if !c.opts.AllowFail {
 			return fmt.Errorf("vault client not created")
 		}
@@ -191,7 +191,7 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...options.Option) error {
 	}
 
 	if err != nil {
-		c.opts.Logger.Errorf(c.opts.Context, "vault load path %s err: %v", c.path, err)
+		c.opts.Logger.Error(c.opts.Context, fmt.Sprintf("vault load path %s err: %v", c.path, err))
 		if !c.opts.AllowFail {
 			return err
 		}
