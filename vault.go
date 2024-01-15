@@ -136,6 +136,10 @@ func (c *vaultConfig) setToken() error {
 }
 
 func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error {
+	if c.opts.SkipLoad != nil && c.opts.SkipLoad(ctx, c) {
+		return nil
+	}
+
 	if err := config.DefaultBeforeLoad(ctx, c); err != nil {
 		return err
 	}
@@ -219,6 +223,10 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...config.LoadOption) error
 }
 
 func (c *vaultConfig) Save(ctx context.Context, opts ...config.SaveOption) error {
+	if c.opts.SkipSave != nil && c.opts.SkipSave(ctx, c) {
+		return nil
+	}
+
 	if err := config.DefaultBeforeSave(ctx, c); err != nil {
 		return err
 	}
