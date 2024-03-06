@@ -1,4 +1,4 @@
-package vault // import "go.unistack.org/micro-config-vault/v3"
+package vault
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"dario.cat/mergo"
 	"github.com/hashicorp/vault/api"
-	"github.com/imdario/mergo"
 	"go.unistack.org/micro/v4/config"
 	"go.unistack.org/micro/v4/options"
 	rutil "go.unistack.org/micro/v4/util/reflect"
@@ -206,7 +206,6 @@ func (c *vaultConfig) Load(ctx context.Context, opts ...options.Option) error {
 		mopts = append(mopts, mergo.WithAppendSlice)
 	}
 	err = mergo.Merge(dst, src, mopts...)
-
 	if err != nil {
 		err = fmt.Errorf("vault load path %s err: %w", c.path, err)
 		if !c.opts.AllowFail {
