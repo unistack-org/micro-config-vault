@@ -3,19 +3,16 @@ module go.unistack.org/micro-config-vault/v3
 go 1.18
 
 require (
-	github.com/hashicorp/vault/api v1.10.0
-	github.com/imdario/mergo v0.3.16
-	go.unistack.org/micro/v3 v3.10.36
+	dario.cat/mergo v1.0.0
+	github.com/hashicorp/vault/api v1.12.0
+	go.unistack.org/micro/v3 v3.10.44
 )
-
-require github.com/stretchr/testify v1.8.4 // indirect
 
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/fatih/color v1.15.0 // indirect
-	github.com/go-jose/go-jose/v3 v3.0.1 // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/uuid v1.5.0 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.2 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.4.0 // indirect
@@ -31,9 +28,8 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
-	golang.org/x/net v0.20.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/net v0.22.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 )
