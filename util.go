@@ -1,12 +1,6 @@
 package vault
 
-import (
-	"encoding/json"
-	"fmt"
-
-	"github.com/hashicorp/vault/api"
-)
-
+/*
 func getKVinfo(cli *api.Client, path string) (string, int, error) {
 	info, err := getKVmount(cli, path)
 	if err != nil {
@@ -50,3 +44,4 @@ func getKVmount(cli *api.Client, path string) (string, error) {
 
 	return info.Data.Options.Version, nil
 }
+*/
