@@ -9,8 +9,8 @@ import (
 
 	"dario.cat/mergo"
 	"github.com/hashicorp/vault/api"
-	"go.unistack.org/micro/v3/config"
-	rutil "go.unistack.org/micro/v3/util/reflect"
+	"go.unistack.org/micro/v4/config"
+	rutil "go.unistack.org/micro/v4/util/reflect"
 )
 
 var DefaultStructTag = "vault"
