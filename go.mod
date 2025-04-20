@@ -1,8 +1,7 @@
 module go.unistack.org/micro-config-vault/v3
 
 go 1.22
-
-toolchain go1.23.1
+toolchain go1.24.1
 
 require (
 	dario.cat/mergo v1.0.1
@@ -31,9 +30,9 @@ require (
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
 	go.unistack.org/micro-proto/v3 v3.4.1 // indirect
-	golang.org/x/crypto v0.30.0 // indirect
+	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/net v0.32.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/time v0.7.0 // indirect
 	google.golang.org/protobuf v1.35.2 // indirect
 )
