@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/vault/api"
-	"go.unistack.org/micro/v4/config"
+	"go.unistack.org/micro/v5/config"
 )
 
 type httpClientKey struct{}

@@ -1,4 +1,4 @@
-module go.unistack.org/micro-config-vault/v4
+module go.unistack.org/micro-config-vault/v5
 
 go 1.24.0
 
@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	dario.cat/mergo v1.0.1
 	github.com/hashicorp/vault/api v1.15.0
-	go.unistack.org/micro/v4 v4.1.3
+	go.unistack.org/micro/v5 v4.1.3
 )
 
 require (
@@ -30,7 +30,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
-	go.unistack.org/micro-proto/v4 v4.1.0 // indirect
+	go.unistack.org/micro-proto/v5 v4.1.0 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
 	golang.org/x/time v0.9.0 // indirect
